@@ -20,18 +20,7 @@ class TodoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(dataFilePath!)
-
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        itemArray.append(newItem)
-
-        let newItem2 = Item()
-        newItem2.title = "Buy eggos"
-        itemArray.append(newItem2)
-
-        let newItem3 = Item()
-        newItem3.title = "Destroy Demogorgon"
-        itemArray.append(newItem3)
+        loadItems()
     }
 
     // MARK: Tabelview Datasource Methods
@@ -78,7 +67,7 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    // MARK: Save item
+    // MARK: Save and load items
     func saveItems() {
         let encoder = PropertyListEncoder()
         do {
@@ -88,6 +77,17 @@ class TodoListViewController: UITableViewController {
             print("Error encoding item array \(error)")
         }
         tableView.reloadData()
+    }
+
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item data \(error)")
+            }
+        }
     }
 }
 
