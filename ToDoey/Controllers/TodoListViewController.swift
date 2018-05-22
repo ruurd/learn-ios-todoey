@@ -23,7 +23,7 @@ class TodoListViewController: UITableViewController {
         loadItems()
     }
 
-    // MARK: Tabelview Datasource Methods
+    // MARK: - Tabelview Datasource Methods
     // ---------------------------------------------------------------------------
     // Make sure you override the methods that are coming from the UITableViewDataSource protocol
     // instead of overriding the regular methods
@@ -39,7 +39,7 @@ class TodoListViewController: UITableViewController {
         return cell
     }
 
-    // MARK: TableView Delegate Methods
+    // MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         saveItems()
@@ -47,7 +47,7 @@ class TodoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    // MARK: Add a new item to the array and persist
+    // MARK: - Add a new item to the array and persist
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField() // Pull the text field in the alert out of its scope so we can access it.
 
@@ -67,7 +67,7 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    // MARK: Save and load items
+    // MARK: - Save and load items
     func saveItems() {
         let encoder = PropertyListEncoder()
         do {
