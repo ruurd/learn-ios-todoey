@@ -7,20 +7,19 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
 
     let CATEGORYCELL = "CategoryCell"
     let ITEMSEGUE = "goToItems"
 
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let realm = try! Realm()
 
-    var categories = [Category]()
+    var categories: Results<Category>!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         loadCategories()
     }
 
@@ -54,23 +53,20 @@ class CategoryViewController: UITableViewController {
         }
     }
 
-    // MARK: - Data manipulation methods
-    func saveCategories() {
+    // MARK: - CRUD actions
+    func save(category: Category) {
         do {
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         } catch {
-            print("Error saving category context: \(error)")
+            print("Error saving category: \(error)")
         }
         tableView.reloadData()
     }
 
-    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
-        do {
-            categories = try context.fetch(request)
-
-        } catch {
-            print("Error fetching categories from context \(error)")
-        }
+    func loadCategories() {
+        categories = realm.objects(Category.self)
         tableView.reloadData()
     }
 
@@ -82,10 +78,9 @@ class CategoryViewController: UITableViewController {
         let action = UIAlertAction(title: "Add category", style: .default) { (action) in
             // add the item to the array
             if let t = textField.text {
-                let newCategory = Category(context: self.context)
+                let newCategory = Category()
                 newCategory.name = t
-                self.categories.append(newCategory)
-                self.saveCategories()
+                self.save(category: newCategory)
             }
         }
         alert.addTextField { (alertTextField) in
