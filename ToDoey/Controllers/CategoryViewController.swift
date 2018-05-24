@@ -16,7 +16,7 @@ class CategoryViewController: UITableViewController {
 
     let realm = try! Realm()
 
-    var categories: Results<Category>!
+    var categories: Results<Category>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,13 +27,12 @@ class CategoryViewController: UITableViewController {
     // Make sure you override the methods that are coming from the UITableViewDataSource protocol
     // instead of overriding the regular methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return categories?.count ?? 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CATEGORYCELL, for: indexPath)
-        let category = categories[indexPath.row]
-        cell.textLabel?.text = category.name
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
         return cell
     }
 
@@ -49,7 +48,7 @@ class CategoryViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! TodoListViewController
         if let indexPath = tableView.indexPathForSelectedRow {
-            destination.selectedCategory = categories[indexPath.row]
+            destination.selectedCategory = categories?[indexPath.row]
         }
     }
 

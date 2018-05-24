@@ -17,12 +17,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
-        print(Realm.Configuration.defaultConfiguration.fileURL!)
+        let config = Realm.Configuration(
+            schemaVersion: 3,
+            migrationBlock: { migration, oldSchemaVersion in
+                if (oldSchemaVersion < 2) {
+                    migration.enumerateObjects(ofType: Item.className()) { oldObject, newObject in
+                        let title = oldObject!["title"] as! String
+                        let done = oldObject!["done"] as! Bool
+                        let crea = oldObject!["dateCreated"] as! Date
+
+                        newObject!["title"] = title
+                        newObject!["done"] = done
+                        newObject!["dateCreated"] = crea
+                        newObject!["dateFinished"] = Date.init(timeIntervalSince1970: 0)
+                    }
+                }
+        })
+
+        Realm.Configuration.defaultConfiguration = config
+
+        // Now that we've told Realm how to handle the schema change, opening the file
+        // will automatically perform the migration
         do {
-            try Realm()
+            let _ = try Realm()
         } catch {
-            print("Error using realm \(error)")
+            print("Error in Realm init: \(error)")
         }
+
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
 
         return true
     }
