@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
 class TodoListViewController: UITableViewController {
 
@@ -24,6 +25,7 @@ class TodoListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.rowHeight = 80
     }
 
     // ---------------------------------------------------------------------------
@@ -36,10 +38,11 @@ class TodoListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TODOITEMCELL, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TODOITEMCELL, for: indexPath) as! SwipeTableViewCell
         if let item = todos?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
+            cell.delegate = self
         } else {
             cell.textLabel?.text = "No items yet"
         }
@@ -100,6 +103,31 @@ class TodoListViewController: UITableViewController {
     func loadItems() {
         todos = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: false)
         tableView.reloadData()
+    }
+}
+
+extension TodoListViewController: SwipeTableViewCellDelegate {
+    func visibleRect(for tableView: UITableView) -> CGRect? {
+        return CGRect(x: 0, y: 0, width: 80, height: 80)
+    }
+
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            if let todo = self.todos?[indexPath.row] {
+                do {
+                    try self.realm.write {
+                        self.realm.delete(todo)
+                    }
+                } catch {
+                    print("Cannot delete item: \(error)")
+                }
+                self.tableView.reloadData()
+            }
+        }
+
+        deleteAction.image = UIImage(named: "delete-icon")
+        return [deleteAction]
     }
 }
 

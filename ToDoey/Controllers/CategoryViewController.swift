@@ -26,7 +26,9 @@ class CategoryViewController: UITableViewController {
         loadCategories()
     }
 
+    // ---------------------------------------------------------------------------
     // MARK: - TableView datasource methods
+    // ---------------------------------------------------------------------------
     // Make sure you override the methods that are coming from the UITableViewDataSource protocol
     // instead of overriding the regular methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -40,6 +42,7 @@ class CategoryViewController: UITableViewController {
         return cell
     }
 
+    // ---------------------------------------------------------------------------
     // MARK: - TableView Delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: ITEMSEGUE, sender: self)
@@ -52,6 +55,7 @@ class CategoryViewController: UITableViewController {
         }
     }
 
+    // ---------------------------------------------------------------------------
     // MARK: - CRUD actions
     func save(category: Category) {
         do {
@@ -69,6 +73,7 @@ class CategoryViewController: UITableViewController {
         tableView.reloadData()
     }
 
+    // ---------------------------------------------------------------------------
     // MARK: - Add new category
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField() // Pull the text field in the alert out of its scope so we can access it.
@@ -91,6 +96,8 @@ class CategoryViewController: UITableViewController {
     }
 }
 
+// ---------------------------------------------------------------------------
+// MARK: - SwipeTableViewCellDelegate extension
 extension CategoryViewController: SwipeTableViewCellDelegate {
     func visibleRect(for tableView: UITableView) -> CGRect? {
         return CGRect(x: 0, y: 0, width: 80, height: 80)
