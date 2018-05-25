@@ -12,9 +12,11 @@ import SwipeCellKit
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
 
     let SWIPETABLECELL = "SwipeTableCell"
+    let ROWHEIGHT = CGFloat(70)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.rowHeight = ROWHEIGHT
     }
 
     func visibleRect(for tableView: UITableView) -> CGRect? {
