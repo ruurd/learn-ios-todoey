@@ -23,6 +23,12 @@ class CategoryViewController: SwipeTableViewController {
         loadCategories()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavbarColorFrom(basicColor: UIColor.flatSkyBlue())
+        tableView.backgroundColor = UIColor.flatSkyBlue()
+    }
+
     // ---------------------------------------------------------------------------
     // MARK: - TableView datasource methods
     // ---------------------------------------------------------------------------

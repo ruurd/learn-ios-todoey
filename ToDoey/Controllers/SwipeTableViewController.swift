@@ -24,6 +24,13 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         return nil
     }
 
+    func setNavbarColorFrom(basicColor: UIColor) {
+        guard let navbar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist")}
+        navbar.barTintColor = basicColor
+        navbar.tintColor = UIColor(contrastingBlackOrWhiteColorOn: basicColor, isFlat: true)
+        navbar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor(contrastingBlackOrWhiteColorOn: basicColor, isFlat: true)]
+    }
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SWIPETABLECELL, for: indexPath) as! SwipeTableViewCell
         cell.delegate = self
@@ -46,6 +53,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     }
 
     func updateModel(at indexPath: IndexPath) {
-        // Update data model
+        print("Implement this method to make it work")
     }
 }
