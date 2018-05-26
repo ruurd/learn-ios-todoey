@@ -13,6 +13,7 @@ class TodoListViewController: SwipeTableViewController {
 
     let realm = try! Realm()
 
+    @IBOutlet weak var searchBar: UISearchBar!
     var todos: Results<Item>?
     var selectedCategory: Category? {
         didSet {
@@ -22,6 +23,21 @@ class TodoListViewController: SwipeTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        title = selectedCategory?.name
+        if let hex = selectedCategory?.bgcolor {
+            guard let navbar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist")}
+
+            navbar.barTintColor = UIColor(hexString: hex)
+            navbar.tintColor = UIColor(contrastingBlackOrWhiteColorOn: navbar.barTintColor, isFlat: true)
+            navbar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: navbar.tintColor]
+            searchBar.barTintColor = UIColor(hexString: hex)
+
+        }
     }
 
     // ---------------------------------------------------------------------------
@@ -37,6 +53,8 @@ class TodoListViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let item = todos?[indexPath.row] {
             cell.textLabel?.text = item.title
+            cell.backgroundColor = UIColor(hexString: selectedCategory!.bgcolor)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todos!.count))
+            cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: cell.backgroundColor, isFlat: true)
             cell.accessoryType = item.done ? .checkmark : .none
         } else {
             cell.textLabel?.text = "No items yet"

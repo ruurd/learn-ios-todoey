@@ -17,6 +17,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = ROWHEIGHT
+        tableView.separatorStyle = .none
     }
 
     func visibleRect(for tableView: UITableView) -> CGRect? {
